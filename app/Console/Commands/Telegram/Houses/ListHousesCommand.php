@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Console\Commands\Telegram;
+namespace App\Console\Commands\Telegram\Houses;
 
 use Telegram\Bot\Commands\Command;
 
-class StartWeekCommand extends Command
+class ListHousesCommand extends Command
 {
-    protected string $name = 'start_week';
-    protected string $description = 'Начать новую рабочую неделю';
+    protected string $name = 'check_in';
+    protected string $description = 'Заселение дома';
 
     public function handle(): void
     {
@@ -16,7 +16,7 @@ class StartWeekCommand extends Command
         // Здесь можно добавить логику (например, запись в БД)
         $this->replyWithMessage([
             'chat_id' => $chatId,
-            'text' => '✅ Неделя начата! Касса обнулена. Всем работать!',
+            'text' => 'Дом заселён ебать!',
         ]);
     }
 }

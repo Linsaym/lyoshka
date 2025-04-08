@@ -28,13 +28,29 @@ class TelegramBotService
 
     protected function registerCommands(): void
     {
-        $commandClasses = glob(app_path('Console/Commands/Telegram/*.php'));
+        //TODO Добавить кеширование в продакшене
+        
+        $commandDirs = [
+            'Core',
+            'Houses',
+            'Finance',
+            'Statuses',
+            'Reports'
+        ];
 
         $commands = [];
-        foreach ($commandClasses as $file) {
-            $className = 'App\\Console\\Commands\\Telegram\\' . basename($file, '.php');
-            if (class_exists($className) && is_subclass_of($className, Command::class)) {
-                $commands[] = $className;
+
+        foreach ($commandDirs as $dir) {
+            $files = glob(app_path("Console/Commands/Telegram/{$dir}/*.php"));
+
+            foreach ($files as $file) {
+                $className = 'App\\Console\\Commands\\Telegram\\' .
+                    str_replace('/', '\\', $dir) . '\\' .
+                    basename($file, '.php');
+
+                if (class_exists($className)) {
+                    $commands[] = $className;
+                }
             }
         }
 
@@ -73,14 +89,6 @@ class TelegramBotService
             'chat_id' => $chatId,
             'text' => $responseText
         ]);
-    }
-
-    /**
-     * Обработка команд
-     */
-    protected function processCommand(Update $update): void
-    {
-        $this->telegram->commandsHandler(true, $update);
     }
 
     /**

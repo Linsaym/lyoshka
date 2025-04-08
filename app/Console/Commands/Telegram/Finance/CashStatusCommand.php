@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\Telegram;
+namespace App\Console\Commands\Telegram\Finance;
 
 use Telegram\Bot\Commands\Command;
 
