@@ -34,7 +34,7 @@ DB_PASSWORD=
 
 # Telegram
 TELEGRAM_BOT_TOKEN=your_bot_token
-TELEGRAM_WEBHOOK_URL=https://your-domain.com/webhook
+TELEGRAM_WEBHOOK_URL=https://your-domain.com/api/telegram/webhook
 ```
 
 5. Примините миграции

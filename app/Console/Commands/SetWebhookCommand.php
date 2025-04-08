@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands\Telegram;
+namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Telegram\Bot\Laravel\Facades\Telegram;
@@ -16,7 +16,7 @@ class SetWebhookCommand extends Command
     public function handle()
     {
         //Не забудьте обновить кеширование env файла
-        $url = $this->argument('url') ?? env('TELEGRAM_WEBHOOK_URL');
+        $url = $this->argument('url') ?? config('telegram.bots.lyoshka.webhook_url');
 
         if (empty($url)) {
             $this->error('URL вебхука не указан! Добавьте в .env TELEGRAM_WEBHOOK_URL или передайте аргументом.');

@@ -2,59 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Services\TelegramBotService;
 use Illuminate\Http\Request;
-use Telegram\Bot\Laravel\Facades\Telegram;
-use App\Services\Telegram\TelegramBotService;
-
-// Если используется сервисный слой
+use Illuminate\Support\Facades\Log;
 
 class TelegramBotController extends Controller
 {
+    protected TelegramBotService $botService;
+
+    public function __construct(TelegramBotService $botService)
+    {
+        $this->botService = $botService;
+    }
+
     /**
-     * Обработка входящего вебхука от Telegram.
+     * Обработка входящего вебхука
      */
     public function handleWebhook(Request $request)
     {
-        // Верификация секретного токена (если настроен)
-        if (env('TELEGRAM_WEBHOOK_SECRET') &&
-            $request->header('X-Telegram-Bot-Api-Secret-Token') !== env('TELEGRAM_WEBHOOK_SECRET')) {
-            abort(403, 'Invalid token');
-        }
-
-        // Логирование входящего запроса
-        \Log::channel('telegram')->debug('Webhook received:', $request->all());
-
-        // Основная обработка
         try {
-            $update = Telegram::commandsHandler(true);
-
-            // Дополнительная логика (например, сохранение в БД)
-            // $this->processUpdate($update);
-
+            $this->botService->handleWebhookUpdate($request->all());
             return response()->json(['status' => 'success']);
-
         } catch (\Exception $e) {
-            \Log::channel('telegram')->error('Webhook error: ' . $e->getMessage());
-            return response()->json(['status' => 'error'], 500);
+            Log::channel('telegram')->error('Webhook error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-    }
-
-    /**
-     * Пример метода для обработки обновлений.
-     */
-    protected function processUpdate($update)
-    {
-        // Ваша логика (разбор сообщений, кнопок и т.д.)
-    }
-
-    /**
-     * Дополнительные методы (например, для ручной отправки сообщений).
-     */
-    public function sendMessage($chatId, $text)
-    {
-        Telegram::sendMessage([
-            'chat_id' => $chatId,
-            'text' => $text,
-        ]);
     }
 }
